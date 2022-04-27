@@ -8,6 +8,7 @@ public class Conta {
 		super();
 		this.cpf = cpf;
 		this.identificador = identificador;
+		
 	}
 	
 }
