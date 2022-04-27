@@ -1,4 +1,4 @@
-package Entidades;
+package br.com.grupo3.entidades;
 
 public abstract class Pessoa {
 	protected String cpf;
