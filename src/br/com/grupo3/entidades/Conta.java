@@ -2,7 +2,9 @@ package br.com.grupo3.entidades;
 
 import br.com.grupo3.enums.Agencia;
 import br.com.grupo3.enums.TipoConta;
+import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 import br.com.grupo3.exceptions.NumeroInvalidoException;
+import br.com.grupo3.validadores.ValidadorCpf;
 
 public abstract class Conta {
 
@@ -15,9 +17,9 @@ public abstract class Conta {
 	protected int valorDeposito;
 	protected int valorTransferencia;
 
-	public Conta(String cpf, double saldo, String codConta, Agencia codAgencia, TipoConta tipoConta) {
+	public Conta(String cpf, double saldo, String codConta, Agencia codAgencia, TipoConta tipoConta) throws ConstrucaoInvalidaException {
 		super();
-		this.cpf = cpf;
+		this.cpf = ValidadorCpf.validarCpf(cpf);
 		this.saldo = saldo;
 		this.codConta = codConta;
 		this.codAgencia = codAgencia;
