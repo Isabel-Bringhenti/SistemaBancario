@@ -11,4 +11,8 @@ public abstract class Funcionario extends Pessoa {
 		this.cargo=cargo;
 	}
 
+	public Cargo getCargo() {
+		return cargo;
+	}
+
 }

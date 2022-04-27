@@ -1,11 +1,12 @@
 package br.com.grupo3.enums;
 
+import br.com.grupo3.exceptions.CodigoInvalidoException;
+
 public enum TipoConta {
-	CONTACORRENTE(1),
-	CONTAPOUPANCA(2);
+	CONTACORRENTE(1), CONTAPOUPANCA(2);
 
 	private int codigoTipoConta;
-	
+
 	TipoConta(int i) {
 		this.codigoTipoConta = i;
 	}
@@ -13,12 +14,13 @@ public enum TipoConta {
 	public int getCodigoTipoConta() {
 		return codigoTipoConta;
 	}
-	public TipoConta getCodigoTipoConta(int i) {
+
+	public TipoConta getTipoContaPorCodigo(int i) throws CodigoInvalidoException {
 		for (TipoConta tipocontaAtual : TipoConta.values()) {
-			if (tipocontaAtual.getCodigoTipoConta()==i) {
+			if (tipocontaAtual.getCodigoTipoConta() == i) {
 				return tipocontaAtual;
 			}
 		}
-		return TipoConta.CONTAPOUPANCA;
+		throw new CodigoInvalidoException();
 	}
 }
