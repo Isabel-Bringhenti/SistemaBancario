@@ -6,7 +6,6 @@ public class Presidente extends Funcionario {
 
 	public Presidente(String cpf, String senha, Cargo cargo) {
 		super(cpf, senha, cargo);
-		// TODO Auto-generated constructor stub
 	}
 
 }

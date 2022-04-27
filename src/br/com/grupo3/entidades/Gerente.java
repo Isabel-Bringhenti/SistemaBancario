@@ -9,6 +9,9 @@ public class Gerente extends Funcionario {
 		this.codAgencia=codAgencia;
 		
 	}
+	public int getCodAgencia() {
+		return codAgencia;
+	}
 
 
 }
