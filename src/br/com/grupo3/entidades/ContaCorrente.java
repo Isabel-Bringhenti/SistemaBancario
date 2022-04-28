@@ -2,10 +2,11 @@ package br.com.grupo3.entidades;
 
 import br.com.grupo3.enums.Agencia;
 import br.com.grupo3.enums.TipoConta;
+import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 
 public class ContaCorrente extends Conta {
 
-	public ContaCorrente(String cpf, double saldo, String codConta, Agencia codAgencia, TipoConta tipoConta) {
+	public ContaCorrente(String cpf, double saldo, String codConta, Agencia codAgencia, TipoConta tipoConta) throws ConstrucaoInvalidaException {
 		super(cpf, saldo, codConta, codAgencia, tipoConta);
 	}
 

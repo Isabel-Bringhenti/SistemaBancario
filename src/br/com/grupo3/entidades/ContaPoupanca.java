@@ -2,11 +2,12 @@ package br.com.grupo3.entidades;
 
 import br.com.grupo3.enums.Agencia;
 import br.com.grupo3.enums.TipoConta;
+import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 import br.com.grupo3.exceptions.NumeroInvalidoException;
 
 public class ContaPoupanca extends Conta {
 
-	public ContaPoupanca(String cpf, double saldo, String codConta, Agencia codAgencia, TipoConta tipoConta) {
+	public ContaPoupanca(String cpf, double saldo, String codConta, Agencia codAgencia, TipoConta tipoConta) throws ConstrucaoInvalidaException {
 		super(cpf, saldo, codConta, codAgencia, tipoConta);
 	}
 
