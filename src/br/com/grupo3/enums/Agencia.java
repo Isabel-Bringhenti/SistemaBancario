@@ -15,7 +15,7 @@ public enum Agencia {
 		return codigoAgencia;
 	}
 
-	public Agencia getAgenciaPorCodigo(int i) throws CodigoInvalidoException {
+	public static Agencia getAgenciaPorCodigo(int i) throws CodigoInvalidoException {
 		for (Agencia agenciaAtual : Agencia.values()) {
 			if (agenciaAtual.getCodigoAgencia() == i) {
 				return agenciaAtual;
