@@ -15,7 +15,7 @@ public enum TipoConta {
 		return codigoTipoConta;
 	}
 
-	public TipoConta getTipoContaPorCodigo(int i) throws CodigoInvalidoException {
+	public static TipoConta getTipoContaPorCodigo(int i) throws CodigoInvalidoException {
 		for (TipoConta tipocontaAtual : TipoConta.values()) {
 			if (tipocontaAtual.getCodigoTipoConta() == i) {
 				return tipocontaAtual;

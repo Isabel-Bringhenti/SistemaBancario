@@ -4,6 +4,7 @@ import br.com.grupo3.enums.Agencia;
 import br.com.grupo3.enums.TipoConta;
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 import br.com.grupo3.exceptions.NumeroInvalidoException;
+import br.com.grupo3.exceptions.SaldoInsuficienteException;
 import br.com.grupo3.validadores.ValidadorCpf;
 
 public abstract class Conta {
@@ -26,12 +27,15 @@ public abstract class Conta {
 		this.tipoConta = tipoConta;
 	}
 
-	public void sacar(double valorInserido) throws NumeroInvalidoException {
+	public void sacar(double valorInserido) throws NumeroInvalidoException, SaldoInsuficienteException {
 		if (valorInserido <= 0) {
 			throw new NumeroInvalidoException();
+		}if(valorInserido+0.1 > this.saldo) {
+			throw new SaldoInsuficienteException();
+		}if(valorInserido+0.1 == this.saldo) {
+			System.out.println("Bom dia");
 		}
-		this.saldo -= valorInserido;
-		this.saldo -= 0.10;
+		this.saldo -= (valorInserido+0.10);
 		valorSaque += 0.10;
 	}
 
@@ -63,6 +67,13 @@ public abstract class Conta {
 	public TipoConta getTipoConta() {
 		return tipoConta;
 	}
+
+	@Override
+	public String toString() {
+		return "Conta [cpf=" + cpf + ", saldo=" + saldo + ", codConta=" + codConta + ", codAgencia=" + codAgencia
+				+ ", tipoConta=" + tipoConta + "]";
+	}
+	
 
 	// public void transferir(double valorInserido,String cpfDestinatario, TipoConta
 	// tipoConta ) throws NumeroInvalidoExeption {

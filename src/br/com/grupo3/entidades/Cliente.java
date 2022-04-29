@@ -8,5 +8,5 @@ public class Cliente extends Pessoa {
 		super(cpf, senha);
 
 	}
-
+	
 }
