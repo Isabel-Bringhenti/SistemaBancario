@@ -1,14 +1,21 @@
 package br.com.grupo3.entidades;
 
+import java.io.IOException;
+
 import br.com.grupo3.enums.Agencia;
 import br.com.grupo3.enums.TipoConta;
+import br.com.grupo3.exceptions.CodigoInvalidoException;
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 import br.com.grupo3.exceptions.NumeroInvalidoException;
 import br.com.grupo3.exceptions.SaldoInsuficienteException;
+import br.com.grupo3.exceptions.ValorInexistenteException;
+import br.com.grupo3.repositorios.ContasRepositorio;
+import br.com.grupo3.repositorios.PessoaRepositorio;
 import br.com.grupo3.validadores.ValidadorCpf;
 
 public abstract class Conta {
 
+	
 	protected String cpf;
 	protected double saldo;
 	protected String codConta;
@@ -18,13 +25,13 @@ public abstract class Conta {
 	protected int valorDeposito;
 	protected int valorTransferencia;
 
-	public Conta(String cpf, double saldo, String codConta, Agencia codAgencia, TipoConta tipoConta) throws ConstrucaoInvalidaException {
+	public Conta(String cpf, double saldo, String codConta, int codAgencia, int tipoConta) throws ConstrucaoInvalidaException, CodigoInvalidoException {
 		super();
 		this.cpf = ValidadorCpf.validarCpf(cpf);
 		this.saldo = saldo;
 		this.codConta = codConta;
-		this.codAgencia = codAgencia;
-		this.tipoConta = tipoConta;
+		this.codAgencia = Agencia.getAgenciaPorCodigo(codAgencia);
+		this.tipoConta = TipoConta.getTipoContaPorCodigo(tipoConta);
 	}
 
 	public void sacar(double valorInserido) throws NumeroInvalidoException, SaldoInsuficienteException {
@@ -32,8 +39,6 @@ public abstract class Conta {
 			throw new NumeroInvalidoException();
 		}if(valorInserido+0.1 > this.saldo) {
 			throw new SaldoInsuficienteException();
-		}if(valorInserido+0.1 == this.saldo) {
-			System.out.println("Bom dia");
 		}
 		this.saldo -= (valorInserido+0.10);
 		valorSaque += 0.10;
@@ -47,6 +52,30 @@ public abstract class Conta {
 		this.saldo -= 0.10;
 		valorDeposito += 0.10;
 	}
+	public void transferir(double valorInserido,String cpfDestinatario)
+							  throws NumeroInvalidoException, IOException, ValorInexistenteException, SaldoInsuficienteException {
+		ContasRepositorio.contaRepositorioLoader();
+		if (valorInserido <= 0) {
+			throw new NumeroInvalidoException();
+		}if(valorInserido+0.2 > this.saldo) {
+			throw new SaldoInsuficienteException();
+		}if(ContasRepositorio.getContaPorCPF(cpfDestinatario).equals(null)) {
+			throw new ValorInexistenteException();
+		}else {
+		ContasRepositorio.getContaPorCPF(cpfDestinatario).saldo+=valorInserido;
+		String cpf=this.cpf;
+		ContasRepositorio.getContaPorCPF(cpf).saldo-=(valorInserido+0.2);
+		valorTransferencia+=0.2;
+		System.out.println("Deu certo memo");
+		this.saldo-=valorTransferencia+0.2;
+		}	
+		}
+		
+		
+		
+		
+		
+	
 
 	public String getCpf() {
 		return cpf;
@@ -75,9 +104,5 @@ public abstract class Conta {
 	}
 	
 
-	// public void transferir(double valorInserido,String cpfDestinatario, TipoConta
-	// tipoConta ) throws NumeroInvalidoExeption {
-	// TODO PRECISA DE ARQUIVO, NUM DA DOIDAO.
-	// }
 
 }

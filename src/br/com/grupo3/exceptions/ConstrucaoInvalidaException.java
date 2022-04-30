@@ -1,5 +1,6 @@
 package br.com.grupo3.exceptions;
 
+
 @SuppressWarnings("serial")
 public class ConstrucaoInvalidaException extends Exception {
 

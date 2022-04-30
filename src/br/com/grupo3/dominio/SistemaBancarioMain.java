@@ -1,44 +1,46 @@
 package br.com.grupo3.dominio;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import br.com.grupo3.entidades.Conta;
 import br.com.grupo3.entidades.ContaCorrente;
 import br.com.grupo3.entidades.ContaPoupanca;
-import br.com.grupo3.enums.Agencia;
-import br.com.grupo3.enums.TipoConta;
 import br.com.grupo3.exceptions.CodigoInvalidoException;
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 import br.com.grupo3.exceptions.NumeroInvalidoException;
 import br.com.grupo3.exceptions.SaldoInsuficienteException;
+import br.com.grupo3.exceptions.ValorExistenteException;
+import br.com.grupo3.exceptions.ValorInexistenteException;
+import br.com.grupo3.repositorios.ContasRepositorio;
+
 
 public class SistemaBancarioMain {
 
 	public static void main(String[] args) {
-
 		try {
-			ContaPoupanca c1 = new ContaPoupanca("11122233344", 3000, "1", Agencia.getAgenciaPorCodigo(1),
-					TipoConta.getTipoContaPorCodigo(2));
-			ContaCorrente c2 = new ContaCorrente("22233344455", 4000, "2", Agencia.getAgenciaPorCodigo(2),
-					TipoConta.getTipoContaPorCodigo(1));
-			System.out.println(c1);
-
-			handleSaque(c1);
-			System.out.println(c1.getSaldo());
-			c2.contrataSeguro(3000);
-			System.out.println(c2.isPossuiSeguro());
-
-			handleDeposito(c2);
+			ContasRepositorio.contaRepositorioLoader();
 			
-
-			handleDeposito(c1);
-
-		} catch (SaldoInsuficienteException | NumeroInvalidoException | ConstrucaoInvalidaException
-				| CodigoInvalidoException e) {
-
+			
+			
+		
+			
+			Conta conta1=ContasRepositorio.getContaPorCPF("11122233344");
+			conta1.transferir(1000, "11122233355");
+			System.out.println(conta1.getSaldo());
+			
+			
+		} catch (IOException e) {
+			System.out.println("Deu ruim");
+		} catch (ValorInexistenteException e) {
+			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+		} catch (NumeroInvalidoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SaldoInsuficienteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			System.out.println("Fechando o programa");
 		}

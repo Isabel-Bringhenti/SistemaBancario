@@ -1,13 +1,11 @@
 package br.com.grupo3.exceptions;
 
 @SuppressWarnings("serial")
-public class ValorExistenteException extends Exception {
+public class ValorInexistenteException extends Exception {
 
 	@Override
 	public String getMessage() {
-		return "Valor inserido já existente.";
+		return "Valor inserido não existente";
 	}
-	
-	
 
 }

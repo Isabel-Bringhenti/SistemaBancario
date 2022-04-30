@@ -2,6 +2,7 @@ package br.com.grupo3.entidades;
 
 import br.com.grupo3.enums.Agencia;
 import br.com.grupo3.enums.TipoConta;
+import br.com.grupo3.exceptions.CodigoInvalidoException;
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 import br.com.grupo3.exceptions.SaldoInsuficienteException;
 
@@ -9,8 +10,14 @@ public class ContaCorrente extends Conta {
 	private boolean possuiSeguro=false;
 	private double valorSeguro;
 
-	public ContaCorrente(String cpf, double saldo, String codConta, Agencia codAgencia, TipoConta tipoConta) throws ConstrucaoInvalidaException {
+	public ContaCorrente(String cpf, double saldo, String codConta, int codAgencia, int tipoConta,boolean possuiSeguro) throws ConstrucaoInvalidaException, CodigoInvalidoException {
 		super(cpf, saldo, codConta, codAgencia, tipoConta);
+		this.possuiSeguro=possuiSeguro;
+	}
+	public ContaCorrente(String cpf, double saldo, String codConta, int codAgencia, int tipoConta,boolean possuiSeguro,double valorSeguro ) throws ConstrucaoInvalidaException, CodigoInvalidoException {
+		super(cpf, saldo, codConta, codAgencia, tipoConta);
+		this.possuiSeguro=possuiSeguro;
+		this.valorSeguro=valorSeguro;
 	}
 
 	public void relatorioTributacao() {
