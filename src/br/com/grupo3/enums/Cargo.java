@@ -15,7 +15,7 @@ public enum Cargo {
 		return codigoCargo;
 	}
 
-	public Cargo getCargoPorCodigo(int i) throws CodigoInvalidoException {
+	public static Cargo getCargoPorCodigo(int i) throws CodigoInvalidoException {
 		for (Cargo cargoAtual : Cargo.values()) {
 			if (cargoAtual.getCodigoCargo() == i) {
 				return cargoAtual;

@@ -1,15 +1,16 @@
 package br.com.grupo3.entidades;
 
 import br.com.grupo3.enums.Cargo;
+import br.com.grupo3.exceptions.CodigoInvalidoException;
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 
 public abstract class Funcionario extends Pessoa {
 	
 	private Cargo cargo;
 	
-	public Funcionario(String cpf, String senha, Cargo cargo) throws ConstrucaoInvalidaException {
-		super(cpf, senha);
-		this.cargo=cargo;
+	public Funcionario(String nome,String cpf, String senha, int codCargo) throws ConstrucaoInvalidaException, CodigoInvalidoException {
+		super(nome,cpf, senha);
+		this.cargo=Cargo.getCargoPorCodigo(codCargo);
 	}
 
 	public Cargo getCargo() {
