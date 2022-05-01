@@ -35,10 +35,7 @@ public class SistemaBancarioMain {
 			Scanner sc = new Scanner(System.in);
 			ContasRepositorio.contaRepositorioLoader();
 			PessoaRepositorio.pessoaRepositorioLoader();
-			Pessoa p1= new Presidente("Arnaldo","44455566677","teste555",3);
-			PessoaRepositorio.adicionarPessoa(p1);
-			Conta c1= new ContaPremium("Arnaldo","44455566677",5000.0,"1245-P",1,3,false,500.0);
-			ContasRepositorio.adicionarContas(c1);
+		
 			Pessoa pessoaAtual = login();
 			Conta contaAtual = loginConta(pessoaAtual);
 			System.out.println(contaAtual);
@@ -46,6 +43,10 @@ public class SistemaBancarioMain {
 				menuInicial();
 				int opcaoEscolhida = sc.nextInt();
 				switch (opcaoEscolhida) {
+				case 0:
+					System.out.println("Saindo do programa!");
+					System.exit(0);
+					break;
 				case 1:
 					handleSaque(contaAtual);
 					break;
@@ -63,6 +64,10 @@ public class SistemaBancarioMain {
 					} else
 
 						switch (opcao) {
+						case 0:
+							System.out.println("Saindo do programa!");
+							System.exit(0);
+							break;
 						case 1:
 							mostrarSaldo(contaAtual);
 							break;
@@ -80,12 +85,12 @@ public class SistemaBancarioMain {
 							}
 							break;
 						case 3:
-							if (contaAtual.getTipoConta().getCodigoTipoConta()==1) {
+							if (contaAtual instanceof ContaPoupanca) {
 								throw new OpcaoInvalidaException();
-							} if (contaAtual.getTipoConta().getCodigoTipoConta()==2) {
+							} if (contaAtual instanceof ContaCorrente) {
 								System.out.println(contaAtual);
 								handleContratarSeguroCorrente(((ContaCorrente) contaAtual));
-							} if (contaAtual.getTipoConta().getCodigoTipoConta()==3) {
+							} if (contaAtual instanceof ContaPremium) {
 								System.out.println("Qual o valor que deseja simular?");
 								double valor = sc.nextDouble();
 								System.out.println("Qual a quantidade de dias que pretende simular?");
@@ -97,7 +102,10 @@ public class SistemaBancarioMain {
 							break;
 						case 4:
 							if (pessoaAtual instanceof Cliente) {
-								throw new OpcaoInvalidaException();
+								if(contaAtual instanceof ContaPremium) {
+									handleContratarSeguroPremium(((ContaPremium)contaAtual));
+											
+								}
 							} else if (pessoaAtual instanceof Gerente) {
 								System.out.print(
 										ContasRepositorio.getContasPorIdAgencia(((Gerente) pessoaAtual).getCodAgencia())
@@ -109,7 +117,7 @@ public class SistemaBancarioMain {
 						case 5:
 							if (pessoaAtual instanceof Presidente) {
 								System.out.println("O valor total no cofre do banco é de:"
-										+ ((2000000 + Conta.getValorDeposito()) - Conta.getValorSaque()));
+										+relatorioPresidente());
 							} else if (pessoaAtual instanceof Gerente || pessoaAtual instanceof Diretor) {
 								handleContratarSeguroPremium(((ContaPremium) contaAtual));
 							} else
@@ -134,10 +142,6 @@ public class SistemaBancarioMain {
 				| SaldoInsuficienteException | NumeroInvalidoException | ContaNaoEncontradaException
 				| OpcaoInvalidaException | CodigoInvalidoException | ValorNegativoOu0Exception e) {
 			System.out.println(e.getMessage());
-		} catch (ValorExistenteException e) {
-			
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} finally {
 			System.out.println("Fechando o programa");
 		}
@@ -153,24 +157,28 @@ public class SistemaBancarioMain {
 		if (pessoa instanceof Cliente) {
 			if (conta instanceof ContaCorrente) {
 				System.out.println(
-						"Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n" + "3-Seguro");
+						"Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n" + "3-Seguro\n"+"0-Sair");
 			} else if (conta instanceof ContaPoupanca) {
-				System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório rendimento");
+				System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório rendimento\n"+"0-Sair");
+			} else if(conta instanceof ContaPremium) {
+				System.out.println(
+						"Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n" + "3-Relatório rendimento\n"+"4-Seguro\n"+"0-Sair");
+				
 			}
 		}
 		if (pessoa instanceof Diretor) {
 			System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n"
-					+ "3-Relatório rendimento\n" + "4-Relatório com todas as contas\n" + "5-Contratar Seguro");
+					+ "3-Relatório rendimento\n" + "4-Relatório com todas as contas\n" + "5-Contratar Seguro\n"+"0-Sair");
 		}
 		if (pessoa instanceof Gerente) {
 			System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n"
 					+ "3-Relatório rendimento\n" + "4-Relatório com todas as contas de sua agência\n"
-					+ "5-Contratar Seguro");
+					+ "5-Contratar Seguro\n"+"0-Sair");
 		}
 		if (pessoa instanceof Presidente) {
 			System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n"
 					+ "3-Relatório rendimento\n" + "4-Relatório com todas as contas\n"
-					+ "5-Relatório com valor total armazenado no banco");
+					+ "5-Contratar Seguro\n"+"6- Relatório dinheiro armazenado\n"+"0-Sair");
 		}
 	}
 
@@ -314,6 +322,15 @@ public class SistemaBancarioMain {
 		}
 		throw new ContaNaoEncontradaException();
 
+	}
+	public static double relatorioPresidente() {
+		List<Conta> listaContas= ContasRepositorio.getContas();
+		double totalBanco=0;
+		for (Conta conta : listaContas) {
+			totalBanco+=conta.getSaldo();
+			
+		}
+		return totalBanco;
 	}
 
 }

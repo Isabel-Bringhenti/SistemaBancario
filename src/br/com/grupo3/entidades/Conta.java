@@ -100,7 +100,7 @@ public abstract class Conta {
 
 	@Override
 	public String toString() {
-		return "Conta [cpf=" + cpf + ", saldo=" + saldo + ", codConta=" + codConta + ", codAgencia=" + codAgencia
+		return "Conta [nome="+ nome +", cpf=" + cpf + ", saldo=" + saldo + ", codConta=" + codConta + ", codAgencia=" + codAgencia
 				+ ", tipoConta=" + tipoConta + "]";
 	}
 

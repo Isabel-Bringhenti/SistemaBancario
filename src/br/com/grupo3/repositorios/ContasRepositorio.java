@@ -142,5 +142,13 @@ public class ContasRepositorio {
 		} catch (ConstrucaoInvalidaException | CodigoInvalidoException e) {
 			e.getMessage();
 		}
+		
+			
+		
 	}
+	public static void atualizarConta(Conta conta,Conta conta1) {
+		
+		
+	}
+
 }
