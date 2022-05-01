@@ -229,7 +229,7 @@ public class SistemaBancarioMain {
 	}
 
 	public static void handleTransferencia(Conta conta)
-			throws NumeroInvalidoException, IOException, ValorInexistenteException, SaldoInsuficienteException {
+			throws NumeroInvalidoException, IOException, ValorInexistenteException, SaldoInsuficienteException, ContaNaoEncontradaException {
 		ContasRepositorio.contaRepositorioLoader();
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Olá! bem vindo ao menu de transferência, quanto deseja transferir");
@@ -239,6 +239,9 @@ public class SistemaBancarioMain {
 		String cpfDestinatario = sc.nextLine();
 		sc.nextLine();
 		conta.transferir(valor, cpfDestinatario);
+		conta.registraTransacao(conta.getTipoConta().getCodigoTipoConta(), cpfDestinatario, valor);
+		conta.atualizaSaldo(conta.getCpf());
+		ContasRepositorio.getContaPorCPF(cpfDestinatario).atualizaSaldo(cpfDestinatario);
 		System.out.println("Transferência realizada com sucesso!");
 	}
 

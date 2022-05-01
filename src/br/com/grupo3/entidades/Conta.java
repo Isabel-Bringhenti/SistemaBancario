@@ -1,11 +1,15 @@
 package br.com.grupo3.entidades;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import br.com.grupo3.enums.Agencia;
 import br.com.grupo3.enums.TipoConta;
 import br.com.grupo3.exceptions.CodigoInvalidoException;
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
+import br.com.grupo3.exceptions.ContaNaoEncontradaException;
 import br.com.grupo3.exceptions.NumeroInvalidoException;
 import br.com.grupo3.exceptions.SaldoInsuficienteException;
 import br.com.grupo3.exceptions.ValorInexistenteException;
@@ -70,11 +74,66 @@ public abstract class Conta {
 		valorTransferencia+=0.2;
 		this.saldo-=(valorInserido+0.2);
 		}	
+	}
+		
+	public void registraTransacao (int tipo,String cpfDestinatario,double valor) throws IOException, ValorInexistenteException {
+		String s = File.separator;
+		File caminhoRegistroArq = new File("src" + s + "br" + s + "com" + s + "grupo3");
+		File registroArq = new File(caminhoRegistroArq.getAbsolutePath() + s + "registroRepositorio.csv");
+
+		if (!caminhoRegistroArq.exists()) {
+			caminhoRegistroArq.mkdirs();
 		}
+
+		if (!registroArq.exists()) {
+			registroArq.createNewFile();
+		}
+
+		try (FileWriter registroArqWriter = new FileWriter(registroArq, true);
+				BufferedWriter registroArqWriterBuff = new BufferedWriter(registroArqWriter)){
+			registroArqWriterBuff.append(tipo+"¨¨"+this.cpf+"¨¨"+valor+"¨¨");
+			if(ContasRepositorio.getContaPorCPF(cpfDestinatario) instanceof ContaCorrente) {
+				registroArqWriterBuff.append("1");
+			} else if(ContasRepositorio.getContaPorCPF(cpfDestinatario) instanceof ContaPoupanca) {
+				registroArqWriterBuff.append("2");
+			} else if(ContasRepositorio.getContaPorCPF(cpfDestinatario) instanceof ContaPremium) {
+				registroArqWriterBuff.append("3");
+			}
+			
+			if(!cpfDestinatario.equals(this.cpf)) {
+				registroArqWriterBuff.append("¨¨"+cpfDestinatario);
+			}
+			registroArqWriterBuff.newLine();
+		}
+	}
 		
-		
-		
-		
+	public void atualizaSaldo(String cpf) throws IOException, ValorInexistenteException, ContaNaoEncontradaException {
+		String s = File.separator;
+		File caminhoAtualizaArq = new File("src" + s + "br" + s + "com" + s + "grupo3");
+		File atualizaArq = new File(caminhoAtualizaArq.getAbsolutePath() + s + "contaRepositorio.csv");
+
+		if (!caminhoAtualizaArq.exists()) {
+			caminhoAtualizaArq.mkdirs();
+		}
+
+		if (!atualizaArq.exists()) {
+			atualizaArq.createNewFile();
+		}
+
+		try (FileWriter atualizaArqWriter = new FileWriter(atualizaArq, true);
+				BufferedWriter atualizaArqWriterBuff = new BufferedWriter(atualizaArqWriter)){
+			if (!this.cpf.equals(cpf)) {
+				throw new ContaNaoEncontradaException();
+			}
+			String saldoAtual=String.valueOf(this.saldo);
+			String saldoAntigo=String.valueOf(ContasRepositorio.getContaPorCPF(cpf).getSaldo());
+			String teste="";
+			teste = teste.replace(saldoAtual,saldoAntigo );
+			atualizaArqWriterBuff.append(teste);
+			
+
+		}
+	}
 		
 	
 
