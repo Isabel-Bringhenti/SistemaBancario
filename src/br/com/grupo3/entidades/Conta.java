@@ -15,22 +15,24 @@ import br.com.grupo3.validadores.ValidadorCpf;
 
 public abstract class Conta {
 
-	
+	protected String nome;
 	protected String cpf;
 	protected double saldo;
 	protected String codConta;
-	protected Agencia codAgencia;
+	protected int codAgencia;
 	protected TipoConta tipoConta;
-	protected int valorSaque;
-	protected int valorDeposito;
-	protected int valorTransferencia;
+	protected static int valorSaque;
+	protected static int valorDeposito;
+	protected static int valorTransferencia;
+	
 
-	public Conta(String cpf, double saldo, String codConta, int codAgencia, int tipoConta) throws ConstrucaoInvalidaException, CodigoInvalidoException {
+	public Conta(String nome,String cpf, double saldo, String codConta, int codAgencia, int tipoConta) throws ConstrucaoInvalidaException, CodigoInvalidoException {
 		super();
+		this.nome=nome;
 		this.cpf = ValidadorCpf.validarCpf(cpf);
 		this.saldo = saldo;
 		this.codConta = codConta;
-		this.codAgencia = Agencia.getAgenciaPorCodigo(codAgencia);
+		this.codAgencia = codAgencia;
 		this.tipoConta = TipoConta.getTipoContaPorCodigo(tipoConta);
 	}
 
@@ -66,8 +68,7 @@ public abstract class Conta {
 		String cpf=this.cpf;
 		ContasRepositorio.getContaPorCPF(cpf).saldo-=(valorInserido+0.2);
 		valorTransferencia+=0.2;
-		System.out.println("Deu certo memo");
-		this.saldo-=valorTransferencia+0.2;
+		this.saldo-=(valorInserido+0.2);
 		}	
 		}
 		
@@ -89,7 +90,7 @@ public abstract class Conta {
 		return codConta;
 	}
 
-	public Agencia getCodAgencia() {
+	public int getCodAgencia() {
 		return codAgencia;
 	}
 
@@ -102,6 +103,27 @@ public abstract class Conta {
 		return "Conta [cpf=" + cpf + ", saldo=" + saldo + ", codConta=" + codConta + ", codAgencia=" + codAgencia
 				+ ", tipoConta=" + tipoConta + "]";
 	}
+
+	public static int getValorSaque() {
+		return valorSaque;
+	}
+
+	public static int getValorDeposito() {
+		return valorDeposito;
+	}
+
+	public static int getValorTransferencia() {
+		return valorTransferencia;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	
 	
 
 

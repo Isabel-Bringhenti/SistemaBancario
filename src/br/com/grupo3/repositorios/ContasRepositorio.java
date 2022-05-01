@@ -6,11 +6,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import br.com.grupo3.entidades.Conta;
 import br.com.grupo3.entidades.ContaCorrente;
 import br.com.grupo3.entidades.ContaPoupanca;
+import br.com.grupo3.entidades.ContaPremium;
 import br.com.grupo3.exceptions.CodigoInvalidoException;
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 import br.com.grupo3.exceptions.ValorExistenteException;
@@ -40,23 +43,32 @@ public class ContasRepositorio {
 		try (FileWriter contaArqWriter = new FileWriter(contaArq, true);
 				BufferedWriter contaArqWriterBuff = new BufferedWriter(contaArqWriter)) {
 
-			contaArqWriterBuff.append(conta.getCpf() + "¨¨" + conta.getSaldo() + "¨¨" + conta.getCodConta() + "¨¨"
-					+ conta.getCodAgencia().getCodigoAgencia() + "¨¨" + conta.getTipoConta().getCodigoTipoConta()
-					+ "¨¨");
+			contaArqWriterBuff.append(
+					conta.getNome() + "¨¨" + conta.getCpf() + "¨¨" + conta.getSaldo() + "¨¨" + conta.getCodConta()
+							+ "¨¨" + conta.getCodAgencia() + "¨¨" + conta.getTipoConta().getCodigoTipoConta() + "¨¨");
 			if (conta instanceof ContaCorrente) {
-				contaArqWriterBuff.append("1" + "¨¨" +((ContaCorrente) conta).isPossuiSeguro()  + "¨¨"
+				contaArqWriterBuff.append("1" + "¨¨" + ((ContaCorrente) conta).isPossuiSeguro() + "¨¨"
 						+ ((ContaCorrente) conta).getValorSeguro());
 			}
 			if (conta instanceof ContaPoupanca) {
 				contaArqWriterBuff.append("2");
 			}
+			if (conta instanceof ContaPremium) {
+				contaArqWriterBuff.append("3" + "¨¨" + ((ContaPremium) conta).isPossuiSeguro() + "¨¨"
+						+ ((ContaPremium) conta).getValorSeguro());
+			}
 			contaArqWriterBuff.newLine();
 			contaArqWriterBuff.flush();
-			contaArqWriterBuff.close();
-			contaArqWriter.close();
+
 		} catch (IOException e) {
 			System.out.println("Erro na escrita dos arquivos");
 		}
+		System.out.println("Conta adicionada com sucesso!");
+
+	}
+
+	public static List<Conta> getContas() {
+		return new ArrayList<Conta>(listaContas.values());
 
 	}
 
@@ -67,11 +79,23 @@ public class ContasRepositorio {
 		return listaContas.get(cpf);
 	}
 
+	public static List<Conta> getContasPorIdAgencia(int codigo)
+			throws ValorInexistenteException, CodigoInvalidoException {
+		List<Conta> listaEspecifica = new ArrayList<>();
+		for (Conta conta : listaContas.values()) {
+
+			if ((conta.getCodAgencia() == codigo)) {
+				listaEspecifica.add(conta);
+			}
+
+		}
+		return listaEspecifica;
+	}
+
 	public static void contaRepositorioLoader() throws IOException {
 		String s = File.separator;
 		File caminhoContaLD = new File("src" + s + "br" + s + "com" + s + "grupo3");
 		File contaLD = new File(caminhoContaLD.getAbsolutePath() + s + "contaRepositorio.csv");
-		System.out.println("até aqui tá safe");
 
 		if (!caminhoContaLD.exists()) {
 			caminhoContaLD.mkdirs();
@@ -86,32 +110,36 @@ public class ContasRepositorio {
 			String linhaContaLDAtual;
 			while ((linhaContaLDAtual = contaLDReaderBuff.readLine()) != null) {
 				String[] linhaTemp = linhaContaLDAtual.split("¨¨");
-				String cpfTemp = linhaTemp[0];
-				double saldoTemp = Double.parseDouble(linhaTemp[1]);
-				String codContaTemp = linhaTemp[2];
-				int codAgenciaTemp = Integer.parseInt(linhaTemp[3]);
-				int tipoContaTemp = Integer.parseInt(linhaTemp[4]);
-				String tipoContaAqui = linhaTemp[5];
+				String nomeTemp = linhaTemp[0];
+				String cpfTemp = linhaTemp[1];
+				double saldoTemp = Double.parseDouble(linhaTemp[2]);
+				String codContaTemp = linhaTemp[3];
+				int codAgenciaTemp = Integer.parseInt(linhaTemp[4]);
+				int tipoContaTemp = Integer.parseInt(linhaTemp[5]);
+				String tipoContaAqui = linhaTemp[6];
 				Conta contaTemp = null;
 				if (tipoContaAqui.equals("1")) {
-					boolean possuiSeguroTemp = Boolean.parseBoolean(linhaTemp[6]);
-					double valorSeguro = Double.parseDouble(linhaTemp[7]);
-					if (possuiSeguroTemp) {
-						contaTemp = new ContaCorrente(cpfTemp, saldoTemp, codContaTemp, codAgenciaTemp, tipoContaTemp,
-								possuiSeguroTemp, valorSeguro);
-					} else {
-						contaTemp = new ContaCorrente(cpfTemp, saldoTemp, codContaTemp, codAgenciaTemp, tipoContaTemp,
-								possuiSeguroTemp);
-					}
+					boolean possuiSeguroTemp = Boolean.parseBoolean(linhaTemp[7]);
+					double valorSeguro = Double.parseDouble(linhaTemp[8]);
+					contaTemp = new ContaCorrente(nomeTemp, cpfTemp, saldoTemp, codContaTemp, codAgenciaTemp,
+							tipoContaTemp, possuiSeguroTemp, valorSeguro);
+
 				} else if (tipoContaAqui.equals("2")) {
-					contaTemp = new ContaPoupanca(cpfTemp, saldoTemp, codContaTemp, codAgenciaTemp, tipoContaTemp);
+					contaTemp = new ContaPoupanca(nomeTemp, cpfTemp, saldoTemp, codContaTemp, codAgenciaTemp,
+							tipoContaTemp);
+
+				}
+				if (tipoContaAqui.equals("3")) {
+					boolean possuiSeguroTemp = Boolean.parseBoolean(linhaTemp[7]);
+					double valorSeguro = Double.parseDouble(linhaTemp[8]);
+					contaTemp = new ContaPremium(nomeTemp, cpfTemp, saldoTemp, codContaTemp, codAgenciaTemp,
+							tipoContaTemp, possuiSeguroTemp, valorSeguro);
+
 				}
 				listaContas.put(contaTemp.getCpf(), contaTemp);
-				System.out.println("Rodou");
 
 			}
 		} catch (ConstrucaoInvalidaException | CodigoInvalidoException e) {
-			// TODO Auto-generated catch block
 			e.getMessage();
 		}
 	}

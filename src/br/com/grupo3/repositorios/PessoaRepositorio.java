@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class PessoaRepositorio {
 		try (FileWriter pessoaArqWriter = new FileWriter(pessoaArq, true);
 				BufferedWriter pessoaArqWriterBuff = new BufferedWriter(pessoaArqWriter)) {
 
-			pessoaArqWriterBuff.append(pessoa.getCpf() + "¨¨" + pessoa.getSenha() + "¨¨");
+			pessoaArqWriterBuff.append(pessoa.getNome()+"¨¨"+pessoa.getCpf() + "¨¨" + pessoa.getSenha() + "¨¨");
 
 			if (pessoa instanceof Cliente) {
 				pessoaArqWriterBuff.append("0");
@@ -60,11 +61,11 @@ public class PessoaRepositorio {
 
 			pessoaArqWriterBuff.newLine();
 			pessoaArqWriterBuff.flush();
-			pessoaArqWriterBuff.close();
-			pessoaArqWriter.close();
+			
 		} catch (IOException e) {
 			System.out.println("Houve um problema ao escrever o arquivo.");
 		}
+		System.out.println("Pessoa adicionada com sucesso!");
 
 	}
 
@@ -75,8 +76,9 @@ public class PessoaRepositorio {
 		return listaPessoas.get(cpf);
 	}
 
-	public static  void getPessoas() {
-		//TODO TIRA DUVIDA DOIDAO
+	public static List<Pessoa>  getPessoas() {
+		return  new ArrayList<Pessoa>(listaPessoas.values());
+		
 	}
 
 	public static void pessoaRepositorioLoader() throws IOException {
@@ -97,23 +99,24 @@ public class PessoaRepositorio {
 			String linhaPessoaLDAtual;
 			while ((linhaPessoaLDAtual = pessoaLDReaderBuff.readLine()) != null) {
 				String[] linhaTemporaria = linhaPessoaLDAtual.split("¨¨");
-				String cpfTemporario = linhaTemporaria[0];
-				String senhaTemporario = linhaTemporaria[1];
-				String tipoPessoaTemp = linhaTemporaria[2];
+				String nomeTemporario=linhaTemporaria[0];
+				String cpfTemporario = linhaTemporaria[1];
+				String senhaTemporario = linhaTemporaria[2];
+				String tipoPessoaTemp = linhaTemporaria[3];
 				Pessoa pessoaTemp = null;
 				if (tipoPessoaTemp.equals("0")) {
-					pessoaTemp = new Cliente(cpfTemporario, senhaTemporario);
+					pessoaTemp = new Cliente(nomeTemporario,cpfTemporario, senhaTemporario);
 				} else {
 					int codigoCargoPessoaTemp = Integer.parseInt(linhaTemporaria[3]);
 					if (tipoPessoaTemp.equals("1")) {
 
-						pessoaTemp = new Diretor(cpfTemporario, senhaTemporario, codigoCargoPessoaTemp);
+						pessoaTemp = new Diretor(nomeTemporario,cpfTemporario, senhaTemporario, codigoCargoPessoaTemp);
 					} else if (tipoPessoaTemp.equals("2")) {
 						int codigoAgenciaTemp = Integer.parseInt(linhaTemporaria[4]);
-						pessoaTemp = new Gerente(cpfTemporario, senhaTemporario, codigoCargoPessoaTemp,
+						pessoaTemp = new Gerente(nomeTemporario,cpfTemporario, senhaTemporario, codigoCargoPessoaTemp,
 								codigoAgenciaTemp);
 					} else if (tipoPessoaTemp.equals("3")) {
-						pessoaTemp = new Presidente(cpfTemporario, senhaTemporario, codigoCargoPessoaTemp);
+						pessoaTemp = new Presidente(nomeTemporario,cpfTemporario, senhaTemporario, codigoCargoPessoaTemp);
 					}
 				}
 				listaPessoas.put(pessoaTemp.getCpf(), pessoaTemp);

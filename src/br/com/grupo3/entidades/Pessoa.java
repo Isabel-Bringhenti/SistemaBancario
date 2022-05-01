@@ -1,14 +1,17 @@
 package br.com.grupo3.entidades;
 
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
+import br.com.grupo3.exceptions.SenhaInvalidaException;
 import br.com.grupo3.validadores.ValidadorCpf;
 import br.com.grupo3.validadores.ValidadorSenha;
 
 public abstract class Pessoa {
+	protected String nome;
 	protected String cpf;
 	protected String senha;
 	
-	public Pessoa(String cpf, String senha) throws ConstrucaoInvalidaException {
+	public Pessoa(String nome,String cpf, String senha) throws ConstrucaoInvalidaException {
+		this.nome=nome;
 		this.cpf = ValidadorCpf.validarCpf(cpf);
 		this.senha = ValidadorSenha.validarSenha(senha);
 	}
@@ -20,5 +23,11 @@ public abstract class Pessoa {
 	public String getSenha() {
 		return senha;
 	}
+
+	public String getNome() {
+		return nome;
+	}
+	
+	
 	
 }

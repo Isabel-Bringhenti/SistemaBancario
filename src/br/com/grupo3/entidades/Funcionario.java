@@ -8,8 +8,8 @@ public abstract class Funcionario extends Pessoa {
 	
 	private Cargo cargo;
 	
-	public Funcionario(String cpf, String senha, int codCargo) throws ConstrucaoInvalidaException, CodigoInvalidoException {
-		super(cpf, senha);
+	public Funcionario(String nome,String cpf, String senha, int codCargo) throws ConstrucaoInvalidaException, CodigoInvalidoException {
+		super(nome,cpf, senha);
 		this.cargo=Cargo.getCargoPorCodigo(codCargo);
 	}
 

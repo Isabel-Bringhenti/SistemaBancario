@@ -3,7 +3,7 @@ package br.com.grupo3.enums;
 import br.com.grupo3.exceptions.CodigoInvalidoException;
 
 public enum TipoConta {
-	CONTACORRENTE(1), CONTAPOUPANCA(2);
+	CONTACORRENTE(1), CONTAPOUPANCA(2), CONTAPREMIUM(3);
 
 	private int codigoTipoConta;
 
