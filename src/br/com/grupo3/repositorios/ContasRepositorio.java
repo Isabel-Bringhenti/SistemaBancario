@@ -13,10 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
+import br.com.grupo3.entidades.Cliente;
 import br.com.grupo3.entidades.Conta;
 import br.com.grupo3.entidades.ContaCorrente;
 import br.com.grupo3.entidades.ContaPoupanca;
 import br.com.grupo3.entidades.ContaPremium;
+import br.com.grupo3.entidades.Pessoa;
 import br.com.grupo3.exceptions.CodigoInvalidoException;
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 import br.com.grupo3.exceptions.ValorExistenteException;
@@ -82,13 +84,11 @@ public class ContasRepositorio {
 		return listaContas.get(cpf);
 	}
 
-	public static List<Conta> getContasTotal(int codigo)
-			throws ValorInexistenteException, CodigoInvalidoException {
-		List<Conta> listaEspecifica = new ArrayList<>();
-		for (Conta conta : listaContas.values()) {
-				listaEspecifica.add(conta);
-		}
-		return listaEspecifica;
+	public static  List<Conta> getClientesOrdem(){
+		ArrayList<Conta> filtrado= new ArrayList<Conta>(listaContas.values());
+		Collections.sort(filtrado);
+		return filtrado;
+		
 	}
 
 	public static void contaRepositorioLoader() throws IOException {

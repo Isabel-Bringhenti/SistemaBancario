@@ -20,7 +20,7 @@ import br.com.grupo3.exceptions.ValorInexistenteException;
 import br.com.grupo3.repositorios.ContasRepositorio;
 import br.com.grupo3.validadores.ValidadorCpf;
 
-public abstract class Conta {
+public abstract class Conta implements Comparable<Conta> {
 
 	protected String nome;
 	protected String cpf;
@@ -31,7 +31,16 @@ public abstract class Conta {
 	protected  int valorSaque;
 	protected  int valorDeposito;
 	protected  int valorTransferencia;
-	
+	@Override
+	public  int compareTo(Conta c) {
+		if(this.getNome().compareTo(c.getNome())<0) {
+			return 0;
+		}
+		if(this.getNome().compareTo(c.getNome())>0) {
+			return 1;	
+		}
+		return -1;
+	}
 
 	public Conta(String nome,String cpf, double saldo, String codConta, int codAgencia, int tipoConta) throws ConstrucaoInvalidaException, CodigoInvalidoException {
 		super();
@@ -79,7 +88,7 @@ public abstract class Conta {
 		}	
 	}
 		
-	public void registraTransacao (int tipo,String cpfDestinatario,double valor) throws IOException, ValorInexistenteException {
+	public void registraTransacao (String transacao,int tipo,String cpfDestinatario,double valor) throws IOException, ValorInexistenteException {
 		String s = File.separator;
 		File caminhoRegistroArq = new File("src" + s + "br" + s + "com" + s + "grupo3");
 		File registroArq = new File(caminhoRegistroArq.getAbsolutePath() + s + "registroRepositorio.csv");
@@ -94,7 +103,7 @@ public abstract class Conta {
 
 		try (FileWriter registroArqWriter = new FileWriter(registroArq, true);
 				BufferedWriter registroArqWriterBuff = new BufferedWriter(registroArqWriter)){
-			registroArqWriterBuff.append(tipo+"¨¨"+this.cpf+"¨¨"+valor+"¨¨");
+			registroArqWriterBuff.append(transacao+"¨¨"+tipo+"¨¨"+this.cpf+"¨¨"+valor+"¨¨");
 			if(ContasRepositorio.getContaPorCPF(cpfDestinatario) instanceof ContaCorrente) {
 				registroArqWriterBuff.append("1");
 			} else if(ContasRepositorio.getContaPorCPF(cpfDestinatario) instanceof ContaPoupanca) {

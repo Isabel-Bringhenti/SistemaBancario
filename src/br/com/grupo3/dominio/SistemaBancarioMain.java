@@ -61,7 +61,7 @@ public class SistemaBancarioMain {
 				case 4:
 					menuRelatorio(pessoaAtual, contaAtual);
 					int opcao = sc.nextInt();
-					if (opcao <= 0 || opcao > 6) {
+					if (opcao < 0 || opcao > 6) {
 						throw new OpcaoInvalidaException();
 					} else
 
@@ -76,14 +76,18 @@ public class SistemaBancarioMain {
 						case 2:
 							if (contaAtual.getTipoConta().getCodigoTipoConta() == 1) {
 								((ContaCorrente) contaAtual).relatorioTributacao();
+								System.out.println("Relatório gerado com sucesso!");
 							} else if (contaAtual.getTipoConta().getCodigoTipoConta() == 2) {
 								System.out.println("Qual o valor que deseja simular?");
 								double valor = sc.nextDouble();
 								System.out.println("Qual a quantidade de dias que pretende simular?");
 								int dias = sc.nextInt();
-								((ContaPoupanca) contaAtual).relatorioRendimento(valor, dias);
+								((ContaPoupanca) contaAtual).relatorioRendimentoConsole(valor, dias);
+								System.out.println("Simulação gerada com sucesso!");
 							} else if (contaAtual.getTipoConta().getCodigoTipoConta() == 3) {
 								((ContaPremium) contaAtual).relatorioTributacaoPremium();
+								
+								
 							}
 							break;
 						case 3:
@@ -100,6 +104,7 @@ public class SistemaBancarioMain {
 								System.out.println("Qual a quantidade de dias que pretende simular?");
 								int dias = sc.nextInt();
 								((ContaPremium) contaAtual).relatorioRendimentoPremium(valor, dias);
+								System.out.println("Simulação gerada com sucesso!");
 							} else {
 								break;
 							}
@@ -114,8 +119,17 @@ public class SistemaBancarioMain {
 								System.out.print(
 										((Gerente)pessoaAtual).getContasPorIdAgencia(((ContaPremium)contaAtual).getCodAgencia())
 												+ "\n");
-							} else {
-								System.out.print(ContasRepositorio.getContas() + "\n");
+										
+										System.out.println("Relatório gerado com sucesso!");
+										
+							} else if (pessoaAtual instanceof Diretor) {
+								System.out.print(ContasRepositorio.getClientesOrdem()+"\n");
+								
+								
+							} else if(pessoaAtual instanceof Presidente) {
+								((Presidente)pessoaAtual).gerarRelatorioDeQtdContas(pessoaAtual);
+								System.out.print(ContasRepositorio.getContas());
+								System.out.println("Relatório gerado com sucesso!");
 							}
 							break;
 						case 5:
@@ -128,8 +142,9 @@ public class SistemaBancarioMain {
 							}
 							break;
 						case 6:
-							if (pessoaAtual instanceof Presidente || pessoaAtual instanceof Diretor) {
-								System.out.println("O valor total no cofre do banco é de:"+relatorioPresidente());
+							if (pessoaAtual instanceof Presidente) {
+								System.out.print("O total no banco é de:"+((Presidente)pessoaAtual).relatorioPresidente());
+								System.out.println("Relatório gerado com sucesso!");
 
 							} else {
 								throw new OpcaoInvalidaException();
@@ -224,7 +239,7 @@ public class SistemaBancarioMain {
 		double valor = sc.nextDouble();
 
 		conta.sacar(valor);
-		conta.registraTransacao(conta.getTipoConta().getCodigoTipoConta(), conta.getCpf(), valor);
+		conta.registraTransacao("saque",conta.getTipoConta().getCodigoTipoConta(), conta.getCpf(), valor);
 		conta.atualizaSaldo(conta.getCpf());
 
 		System.out.println("Saque realizado com sucesso! O valor foi debitado de sua conta");
@@ -236,7 +251,7 @@ public class SistemaBancarioMain {
 		System.out.println("Olá! Bem vindo(a) ao sistema de depósito." + "Quanto deseja depositar?");
 		double valor = sc.nextDouble();
 		conta.depositar(valor);
-		conta.registraTransacao(conta.getTipoConta().getCodigoTipoConta(), conta.getCpf(), valor);
+		conta.registraTransacao("deposito",conta.getTipoConta().getCodigoTipoConta(), conta.getCpf(), valor);
 		conta.atualizaSaldo(conta.getCpf());
 		
 		System.out.println("Depósito realizado com sucesso");
@@ -254,7 +269,7 @@ public class SistemaBancarioMain {
 		String cpfDestinatario = sc.nextLine();
 		sc.nextLine();
 		conta.transferir(valor, cpfDestinatario);
-		conta.registraTransacao(conta.getTipoConta().getCodigoTipoConta(), cpfDestinatario, valor);
+		conta.registraTransacao("transferencia",conta.getTipoConta().getCodigoTipoConta(), cpfDestinatario, valor);
 		conta.atualizaSaldo(conta.getCpf());
 		ContasRepositorio.getContaPorCPF(cpfDestinatario).atualizaSaldo(cpfDestinatario);
 		System.out.println("Transferência realizada com sucesso!");
@@ -342,14 +357,6 @@ public class SistemaBancarioMain {
 
 	}
 
-	public static double relatorioPresidente() {
-		List<Conta> listaContas = ContasRepositorio.getContas();
-		double totalBanco = 0;
-		for (Conta conta : listaContas) {
-			totalBanco += conta.getSaldo();
-
-		}
-		return totalBanco;
-	}
+	
 
 }
