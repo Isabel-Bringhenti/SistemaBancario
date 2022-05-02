@@ -10,6 +10,7 @@ import br.com.grupo3.entidades.ContaCorrente;
 import br.com.grupo3.entidades.ContaPoupanca;
 import br.com.grupo3.entidades.ContaPremium;
 import br.com.grupo3.entidades.Diretor;
+import br.com.grupo3.entidades.Funcionario;
 import br.com.grupo3.entidades.Gerente;
 import br.com.grupo3.entidades.Pessoa;
 import br.com.grupo3.entidades.Presidente;
@@ -35,7 +36,8 @@ public class SistemaBancarioMain {
 			Scanner sc = new Scanner(System.in);
 			ContasRepositorio.contaRepositorioLoader();
 			PessoaRepositorio.pessoaRepositorioLoader();
-		
+			
+
 			Pessoa pessoaAtual = login();
 			Conta contaAtual = loginConta(pessoaAtual);
 			System.out.println(contaAtual);
@@ -59,7 +61,7 @@ public class SistemaBancarioMain {
 				case 4:
 					menuRelatorio(pessoaAtual, contaAtual);
 					int opcao = sc.nextInt();
-					if (opcao <= 0 || opcao > 5) {
+					if (opcao <= 0 || opcao > 6) {
 						throw new OpcaoInvalidaException();
 					} else
 
@@ -72,43 +74,45 @@ public class SistemaBancarioMain {
 							mostrarSaldo(contaAtual);
 							break;
 						case 2:
-							if (contaAtual.getTipoConta().getCodigoTipoConta()==1 ) {
+							if (contaAtual.getTipoConta().getCodigoTipoConta() == 1) {
 								((ContaCorrente) contaAtual).relatorioTributacao();
-							} else if (contaAtual.getTipoConta().getCodigoTipoConta()==2) {
+							} else if (contaAtual.getTipoConta().getCodigoTipoConta() == 2) {
 								System.out.println("Qual o valor que deseja simular?");
 								double valor = sc.nextDouble();
 								System.out.println("Qual a quantidade de dias que pretende simular?");
 								int dias = sc.nextInt();
 								((ContaPoupanca) contaAtual).relatorioRendimento(valor, dias);
-							} else if (contaAtual.getTipoConta().getCodigoTipoConta()==3) {
+							} else if (contaAtual.getTipoConta().getCodigoTipoConta() == 3) {
 								((ContaPremium) contaAtual).relatorioTributacaoPremium();
 							}
 							break;
 						case 3:
 							if (contaAtual instanceof ContaPoupanca) {
 								throw new OpcaoInvalidaException();
-							} if (contaAtual instanceof ContaCorrente) {
+							}
+							if (contaAtual instanceof ContaCorrente) {
 								System.out.println(contaAtual);
 								handleContratarSeguroCorrente(((ContaCorrente) contaAtual));
-							} if (contaAtual instanceof ContaPremium) {
+							}
+							if (contaAtual instanceof ContaPremium) {
 								System.out.println("Qual o valor que deseja simular?");
 								double valor = sc.nextDouble();
 								System.out.println("Qual a quantidade de dias que pretende simular?");
 								int dias = sc.nextInt();
 								((ContaPremium) contaAtual).relatorioRendimentoPremium(valor, dias);
-							}else {
+							} else {
 								break;
 							}
 							break;
 						case 4:
 							if (pessoaAtual instanceof Cliente) {
-								if(contaAtual instanceof ContaPremium) {
-									handleContratarSeguroPremium(((ContaPremium)contaAtual));
-											
+								if (contaAtual instanceof ContaPremium) {
+									handleContratarSeguroPremium(((ContaPremium) contaAtual));
+
 								}
 							} else if (pessoaAtual instanceof Gerente) {
 								System.out.print(
-										ContasRepositorio.getContasPorIdAgencia(((Gerente) pessoaAtual).getCodAgencia())
+										((Gerente)pessoaAtual).getContasPorIdAgencia(((ContaPremium)contaAtual).getCodAgencia())
 												+ "\n");
 							} else {
 								System.out.print(ContasRepositorio.getContas() + "\n");
@@ -116,20 +120,24 @@ public class SistemaBancarioMain {
 							break;
 						case 5:
 							if (pessoaAtual instanceof Presidente) {
-								System.out.println("O valor total no cofre do banco é de:"
-										+relatorioPresidente());
+								handleContratarSeguroPremium((ContaPremium)contaAtual);
 							} else if (pessoaAtual instanceof Gerente || pessoaAtual instanceof Diretor) {
 								handleContratarSeguroPremium(((ContaPremium) contaAtual));
-							} else
+							} else {
 								throw new OpcaoInvalidaException();
+							}
 							break;
 						case 6:
-							if (pessoaAtual instanceof Presidente) {
-								handleContratarSeguroPremium(((ContaPremium) contaAtual));
-							} else
+							if (pessoaAtual instanceof Presidente || pessoaAtual instanceof Diretor) {
+								System.out.println("O valor total no cofre do banco é de:"+relatorioPresidente());
+
+							} else {
 								throw new OpcaoInvalidaException();
+							}
 							break;
 
+						default:
+							break;
 						}
 				default:
 					break;
@@ -156,29 +164,31 @@ public class SistemaBancarioMain {
 	public static void menuRelatorio(Pessoa pessoa, Conta conta) {
 		if (pessoa instanceof Cliente) {
 			if (conta instanceof ContaCorrente) {
-				System.out.println(
-						"Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n" + "3-Seguro\n"+"0-Sair");
+				System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n"
+						+ "3-Seguro\n" + "0-Sair");
 			} else if (conta instanceof ContaPoupanca) {
-				System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório rendimento\n"+"0-Sair");
-			} else if(conta instanceof ContaPremium) {
 				System.out.println(
-						"Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n" + "3-Relatório rendimento\n"+"4-Seguro\n"+"0-Sair");
-				
+						"Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório rendimento\n" + "0-Sair");
+			} else if (conta instanceof ContaPremium) {
+				System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n"
+						+ "3-Relatório rendimento\n" + "4-Seguro\n" + "0-Sair");
+
 			}
 		}
 		if (pessoa instanceof Diretor) {
 			System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n"
-					+ "3-Relatório rendimento\n" + "4-Relatório com todas as contas\n" + "5-Contratar Seguro\n"+"0-Sair");
+					+ "3-Relatório rendimento\n" + "4-Relatório com todas as contas\n" + "5-Contratar Seguro\n"
+					+ "0-Sair");
 		}
 		if (pessoa instanceof Gerente) {
 			System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n"
 					+ "3-Relatório rendimento\n" + "4-Relatório com todas as contas de sua agência\n"
-					+ "5-Contratar Seguro\n"+"0-Sair");
+					+ "5-Contratar Seguro\n" + "0-Sair");
 		}
 		if (pessoa instanceof Presidente) {
 			System.out.println("Relatórios disponíveis\n" + "1-Mostrar saldo\n" + "2-Relatório tributação\n"
-					+ "3-Relatório rendimento\n" + "4-Relatório com todas as contas\n"
-					+ "5-Contratar Seguro\n"+"6- Relatório dinheiro armazenado\n"+"0-Sair");
+					+ "3-Relatório rendimento\n" + "4-Relatório com todas as contas\n" + "5-Contratar Seguro\n"
+					+ "6- Relatório dinheiro armazenado\n" + "0-Sair");
 		}
 	}
 
@@ -208,28 +218,33 @@ public class SistemaBancarioMain {
 
 	}
 
-	public static void handleSaque(Conta conta) throws NumeroInvalidoException, SaldoInsuficienteException {
+	public static void handleSaque(Conta conta) throws NumeroInvalidoException, SaldoInsuficienteException, IOException, ValorInexistenteException, ContaNaoEncontradaException {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Olá! quanto deseja sacar?");
 		double valor = sc.nextDouble();
 
 		conta.sacar(valor);
+		conta.registraTransacao(conta.getTipoConta().getCodigoTipoConta(), conta.getCpf(), valor);
+		conta.atualizaSaldo(conta.getCpf());
 
 		System.out.println("Saque realizado com sucesso! O valor foi debitado de sua conta");
 
 	}
 
-	public static void handleDeposito(Conta conta) throws NumeroInvalidoException {
+	public static void handleDeposito(Conta conta) throws NumeroInvalidoException, IOException, ValorInexistenteException, ContaNaoEncontradaException {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Olá! Bem vindo(a) ao sistema de depósito." + "Quanto deseja depositar?");
 		double valor = sc.nextDouble();
 		conta.depositar(valor);
+		conta.registraTransacao(conta.getTipoConta().getCodigoTipoConta(), conta.getCpf(), valor);
+		conta.atualizaSaldo(conta.getCpf());
+		
 		System.out.println("Depósito realizado com sucesso");
 
 	}
 
-	public static void handleTransferencia(Conta conta)
-			throws NumeroInvalidoException, IOException, ValorInexistenteException, SaldoInsuficienteException, ContaNaoEncontradaException {
+	public static void handleTransferencia(Conta conta) throws NumeroInvalidoException, IOException,
+			ValorInexistenteException, SaldoInsuficienteException, ContaNaoEncontradaException {
 		ContasRepositorio.contaRepositorioLoader();
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Olá! bem vindo ao menu de transferência, quanto deseja transferir");
@@ -326,12 +341,13 @@ public class SistemaBancarioMain {
 		throw new ContaNaoEncontradaException();
 
 	}
+
 	public static double relatorioPresidente() {
-		List<Conta> listaContas= ContasRepositorio.getContas();
-		double totalBanco=0;
+		List<Conta> listaContas = ContasRepositorio.getContas();
+		double totalBanco = 0;
 		for (Conta conta : listaContas) {
-			totalBanco+=conta.getSaldo();
-			
+			totalBanco += conta.getSaldo();
+
 		}
 		return totalBanco;
 	}

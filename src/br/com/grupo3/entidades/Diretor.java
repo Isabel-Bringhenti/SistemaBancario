@@ -17,6 +17,8 @@ public class Diretor extends Funcionario {
 	public static void gerarClientesByAgenciaId(int idAgencia) throws IOException {
 		ContasRepositorio.contaRepositorioLoader();
 		
+	}public void relatorioContas(){
+		System.out.println("O número total de contas é de:"+ContasRepositorio.getContas().size());
 	}
 
 }
