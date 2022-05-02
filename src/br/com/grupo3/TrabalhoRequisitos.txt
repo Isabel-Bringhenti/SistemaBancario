@@ -1,0 +1,29 @@
+Requisitos funcionais:
+O sistema deve ter um login de usuário
+O sistema deve ter um método de saque
+O sistema deve ter um método de depósito
+O sistema deve ter um método de transferência
+O sistema deve ter um menu
+O sistema deve ter um menu de relatórios
+O sistema deve ter um relatório de saldo atual
+O sistema deve ter um relatório de contas por agência
+O sistema deve ter um relatório de contas totais
+O sistema deve ter um relatório de total armazenado no banco
+O sistema deve ter um relatório de rendimento calculado por dias
+O sistema deve ter um relatório de tributação
+O sistema deve ter um método de contratação de seguro
+--------------------------------------------------------------------------------------------------------------------
+Requisitos não funcionais:
+O sistema deve ser feito em java
+O sistema deve usar arquivos
+--------------------------------------------------------------------------------------------------------------------
+Regras de negócio:
+As transações devem ter uma taxa
+Usuários do sistema podem ter 3 tipos de conta
+O banco possui 3 tipos de funcionários
+O banco possui um sistema para registrar as transações
+O sistema deve realizar pelo menos um tratamento de erros
+O sistema deve apresentar um menu diferente para cada Usuario de acordo com suas especificações
+O sistema deve cobrar 20% do valor inserido durante a contratação do seguro
+O sistema deve ser capaz de reconhecer no momento do login se a pessoa é um cliente ou um funcionário
+
