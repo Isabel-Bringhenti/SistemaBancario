@@ -40,7 +40,6 @@ public class SistemaBancarioMain {
 
 			Pessoa pessoaAtual = login();
 			Conta contaAtual = loginConta(pessoaAtual);
-			System.out.println(contaAtual);
 			while (true) {
 				menuInicial();
 				int opcaoEscolhida = sc.nextInt();
@@ -267,7 +266,6 @@ public class SistemaBancarioMain {
 		sc.nextLine();
 		System.out.println("Okay, agora o cpf da pessoa para quem você deseja transferir esse valor");
 		String cpfDestinatario = sc.nextLine();
-		sc.nextLine();
 		conta.transferir(valor, cpfDestinatario);
 		conta.registraTransacao("transferencia",conta.getTipoConta().getCodigoTipoConta(), cpfDestinatario, valor);
 		conta.atualizaSaldo(conta.getCpf());

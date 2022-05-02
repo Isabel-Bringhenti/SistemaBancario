@@ -88,7 +88,7 @@ public abstract class Conta implements Comparable<Conta> {
 		}	
 	}
 		
-	public void registraTransacao (String transacao,int tipo,String cpfDestinatario,double valor) throws IOException, ValorInexistenteException {
+	public void registraTransacao (String transacao,int tipo,String cpfDestinatario,double valor) throws  ValorInexistenteException, IOException {
 		String s = File.separator;
 		File caminhoRegistroArq = new File("src" + s + "br" + s + "com" + s + "grupo3");
 		File registroArq = new File(caminhoRegistroArq.getAbsolutePath() + s + "registroRepositorio.csv");
@@ -101,8 +101,8 @@ public abstract class Conta implements Comparable<Conta> {
 			registroArq.createNewFile();
 		}
 
-		try (FileWriter registroArqWriter = new FileWriter(registroArq, true);
-				BufferedWriter registroArqWriterBuff = new BufferedWriter(registroArqWriter)){
+		FileWriter registroArqWriter = new FileWriter(registroArq, true);
+				BufferedWriter registroArqWriterBuff = new BufferedWriter(registroArqWriter);
 			registroArqWriterBuff.append(transacao+"¨¨"+tipo+"¨¨"+this.cpf+"¨¨"+valor+"¨¨");
 			if(ContasRepositorio.getContaPorCPF(cpfDestinatario) instanceof ContaCorrente) {
 				registroArqWriterBuff.append("1");
@@ -116,15 +116,17 @@ public abstract class Conta implements Comparable<Conta> {
 				registroArqWriterBuff.append("¨¨"+cpfDestinatario);
 			}
 			registroArqWriterBuff.newLine();
-		}
+			registroArqWriterBuff.close();
+			registroArqWriter.close();
+		
+		
+		
 	}
 		
 	public void atualizaSaldo(String cpf) throws  ValorInexistenteException, ContaNaoEncontradaException, IOException {
 		String s = File.separator;
 		File caminhoAtualizaArq = new File("src" + s + "br" + s + "com" + s + "grupo3");
 		File atualizaArq = new File(caminhoAtualizaArq.getAbsolutePath() + s + "contaRepositorio.csv");
-		//List<Conta> listaAtualizada= new ArrayList();
-		System.out.println(atualizaArq.length());
 		if (!caminhoAtualizaArq.exists()) {
 			caminhoAtualizaArq.mkdirs();
 		}
