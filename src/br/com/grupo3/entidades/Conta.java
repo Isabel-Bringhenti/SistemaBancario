@@ -1,11 +1,15 @@
 package br.com.grupo3.entidades;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-import br.com.grupo3.enums.Agencia;
 import br.com.grupo3.enums.TipoConta;
 import br.com.grupo3.exceptions.CodigoInvalidoException;
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
@@ -14,10 +18,9 @@ import br.com.grupo3.exceptions.NumeroInvalidoException;
 import br.com.grupo3.exceptions.SaldoInsuficienteException;
 import br.com.grupo3.exceptions.ValorInexistenteException;
 import br.com.grupo3.repositorios.ContasRepositorio;
-import br.com.grupo3.repositorios.PessoaRepositorio;
 import br.com.grupo3.validadores.ValidadorCpf;
 
-public abstract class Conta {
+public abstract class Conta implements Comparable<Conta> {
 
 	protected String nome;
 	protected String cpf;
@@ -25,10 +28,19 @@ public abstract class Conta {
 	protected String codConta;
 	protected int codAgencia;
 	protected TipoConta tipoConta;
-	protected static int valorSaque;
-	protected static int valorDeposito;
-	protected static int valorTransferencia;
-	
+	protected  int valorSaque;
+	protected  int valorDeposito;
+	protected  int valorTransferencia;
+	@Override
+	public  int compareTo(Conta c) {
+		if(this.getNome().compareTo(c.getNome())<0) {
+			return 0;
+		}
+		if(this.getNome().compareTo(c.getNome())>0) {
+			return 1;	
+		}
+		return -1;
+	}
 
 	public Conta(String nome,String cpf, double saldo, String codConta, int codAgencia, int tipoConta) throws ConstrucaoInvalidaException, CodigoInvalidoException {
 		super();
@@ -76,7 +88,7 @@ public abstract class Conta {
 		}	
 	}
 		
-	public void registraTransacao (int tipo,String cpfDestinatario,double valor) throws IOException, ValorInexistenteException {
+	public void registraTransacao (String transacao,int tipo,String cpfDestinatario,double valor) throws IOException, ValorInexistenteException {
 		String s = File.separator;
 		File caminhoRegistroArq = new File("src" + s + "br" + s + "com" + s + "grupo3");
 		File registroArq = new File(caminhoRegistroArq.getAbsolutePath() + s + "registroRepositorio.csv");
@@ -91,7 +103,7 @@ public abstract class Conta {
 
 		try (FileWriter registroArqWriter = new FileWriter(registroArq, true);
 				BufferedWriter registroArqWriterBuff = new BufferedWriter(registroArqWriter)){
-			registroArqWriterBuff.append(tipo+"¨¨"+this.cpf+"¨¨"+valor+"¨¨");
+			registroArqWriterBuff.append(transacao+"¨¨"+tipo+"¨¨"+this.cpf+"¨¨"+valor+"¨¨");
 			if(ContasRepositorio.getContaPorCPF(cpfDestinatario) instanceof ContaCorrente) {
 				registroArqWriterBuff.append("1");
 			} else if(ContasRepositorio.getContaPorCPF(cpfDestinatario) instanceof ContaPoupanca) {
@@ -107,11 +119,12 @@ public abstract class Conta {
 		}
 	}
 		
-	public void atualizaSaldo(String cpf) throws IOException, ValorInexistenteException, ContaNaoEncontradaException {
+	public void atualizaSaldo(String cpf) throws  ValorInexistenteException, ContaNaoEncontradaException, IOException {
 		String s = File.separator;
 		File caminhoAtualizaArq = new File("src" + s + "br" + s + "com" + s + "grupo3");
 		File atualizaArq = new File(caminhoAtualizaArq.getAbsolutePath() + s + "contaRepositorio.csv");
-
+		//List<Conta> listaAtualizada= new ArrayList();
+		System.out.println(atualizaArq.length());
 		if (!caminhoAtualizaArq.exists()) {
 			caminhoAtualizaArq.mkdirs();
 		}
@@ -119,20 +132,36 @@ public abstract class Conta {
 		if (!atualizaArq.exists()) {
 			atualizaArq.createNewFile();
 		}
-
-		try (FileWriter atualizaArqWriter = new FileWriter(atualizaArq, true);
-				BufferedWriter atualizaArqWriterBuff = new BufferedWriter(atualizaArqWriter)){
+		StringBuilder SB= new StringBuilder();
+		try (FileReader atualizaArqReader = new FileReader(atualizaArq);
+				BufferedReader atualizaArqReaderBuff = new BufferedReader(atualizaArqReader)){
 			if (!this.cpf.equals(cpf)) {
 				throw new ContaNaoEncontradaException();
 			}
 			String saldoAtual=String.valueOf(this.saldo);
-			String saldoAntigo=String.valueOf(ContasRepositorio.getContaPorCPF(cpf).getSaldo());
-			String teste="";
-			teste = teste.replace(saldoAtual,saldoAntigo );
-			atualizaArqWriterBuff.append(teste);
+			String linhaTemporaria="";
+			while((linhaTemporaria=atualizaArqReaderBuff.readLine())!= null) {
+				//String saldoAntigo=String.valueOf(ContasRepositorio.getContaPorCPF(cpf).getSaldo());
+				String[] separador=linhaTemporaria.split("¨¨");
+				if(separador[1].equals(cpf)) {
+					linhaTemporaria = linhaTemporaria.replace(separador[2],String.valueOf(ContasRepositorio.getContaPorCPF(cpf).getSaldo())) ;
+				}
+	
+				
+				SB.append(linhaTemporaria+"\n");
+			}
+			
+			
 			
 
+		}catch (IOException e) {
+			System.out.println("Deu erro ai mano");
 		}
+		try (FileWriter atualizaArqWriter = new FileWriter(atualizaArq);
+				BufferedWriter atualizaArqWriterBuff = new BufferedWriter(atualizaArqWriter)){
+	              atualizaArqWriterBuff.append(SB);
+		}
+	          
 	}
 		
 	
@@ -163,15 +192,15 @@ public abstract class Conta {
 				+ ", tipoConta=" + tipoConta + "]";
 	}
 
-	public static int getValorSaque() {
+	public  int getValorSaque() {
 		return valorSaque;
 	}
 
-	public static int getValorDeposito() {
+	public  int getValorDeposito() {
 		return valorDeposito;
 	}
 
-	public static int getValorTransferencia() {
+	public  int getValorTransferencia() {
 		return valorTransferencia;
 	}
 

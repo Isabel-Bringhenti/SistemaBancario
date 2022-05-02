@@ -1,5 +1,13 @@
 package br.com.grupo3.entidades;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+
 import br.com.grupo3.exceptions.CodigoInvalidoException;
 import br.com.grupo3.exceptions.ConstrucaoInvalidaException;
 import br.com.grupo3.exceptions.SaldoInsuficienteException;
@@ -17,13 +25,43 @@ public class ContaCorrente extends Conta {
 	}
 
 	public  void relatorioTributacao() {
-		double total = (super.valorSaque) + (super.valorDeposito) + (super.valorTransferencia)+(this.gastoSeguroAgora);
-		System.out.println("O total tributado de suas operações foi " + total + ".");
-		System.out.println("O banco cobra um valor para cada tipo de operação. Para o saque, é cobrado R$0,10."
-				+ " Para o depósito, é cobrado R$0,10. Para a transferencia, é cobrado R$0,20.");
-		if(this.possuiSeguro) {
-			System.out.println("O valor em seguro contratado é de: R$"+this.valorSeguro);
-		}
+		LocalDateTime instante=LocalDateTime.now();
+		String s = File.separator;
+		File caminhoRegistroRepositorio=new File("src" + s + "br" + s + "com" + s + "grupo3");
+		File registroRepositorio=new File(caminhoRegistroRepositorio.getAbsolutePath()+s+"registroRepositorio.csv");
+		double totalTaxaSaque=0;
+		double totalTaxaDeposito=0;
+		double totalTaxaTransferencia=0;
+		 try (FileReader registroRepositorioReader = new FileReader(registroRepositorio);
+	             BufferedReader registroRepositorioReaderBuff = new BufferedReader(registroRepositorioReader)) {
+
+	            String linhaAtual;
+	            while (((linhaAtual = registroRepositorioReaderBuff.readLine()) != null)) {
+	                String[] itensTemp = linhaAtual.split("¨¨");
+	                if (itensTemp[2].equals(this.cpf) && itensTemp[1].equals("3")) {
+	                    switch (itensTemp[0]) {
+	                        case "saque":
+	                            totalTaxaSaque += 0.10;
+	                            break;
+	                        case "deposito":
+	                            totalTaxaDeposito +=0.10;
+	                            break;
+	                        case "transferencia":
+	                            totalTaxaTransferencia += 0.20;
+	                            break;
+	                    }
+	                }
+	            }
+	        } catch (IOException e) {
+	            System.out.println("Erro lendo algo, dá uma checada");
+	        }
+		 System.out.println("Total gasto com taxas do saque: R$"+totalTaxaSaque);
+		 System.out.println("Total gasto com taxas do deposito: R$"+totalTaxaDeposito);
+		 System.out.println("Total gasto com taxas de transferência: R$"+totalTaxaTransferencia);
+		 System.out.println("Valores das taxas:");
+		 System.out.println("Saque: R$0.10"
+							+ "Deposito: R$0.10"
+		 					+ "Transferência: R$ 0.20");
 	}
 	public  void contrataSeguro(double valor) throws SaldoInsuficienteException {
 		if(valor>this.saldo) {
