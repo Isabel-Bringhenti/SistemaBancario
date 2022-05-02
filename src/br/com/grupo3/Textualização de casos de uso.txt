@@ -1,0 +1,15 @@
+Casos de uso UC1-Autenticação de usuário
+1-O usuário inicia o programa
+2-O sistema pede o cpf do usuário*
+3-O sistema pede a senha do usuário*
+4-O sistema valida o login*
+5-O sistema informa que o login foi bem sucedido, e apresenta o menu inicial
+Casos alternativos:
+2.a Cpf digitado é inválido:
+O sistema avisa ao usuário, e fecha.
+2.b Cpf não encontrado no sistema:
+O sistema informa o usuário que o cpf não foi encontrado e cancela a operação.
+3.a A senha digitada é inválida:
+O sistema informa ao usuário que a senha deve ter no mínimo 8 dígitos e fecha.
+3.b A senha não foi encontrada no sistema:
+O sistema informa que a senha não foi encontrada, e fecha.
