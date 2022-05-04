@@ -28,6 +28,9 @@ import br.com.grupo3.repositorios.ContasRepositorio;
 import br.com.grupo3.repositorios.PessoaRepositorio;
 import br.com.grupo3.validadores.ValidadorCpf;
 import br.com.grupo3.validadores.ValidadorSenha;
+// Algumas sugestões no menu
+// 1º - nem toda operação, como colocar um valor precisaria implicar em parar o programa
+// 2º - Alguns erros de aproximação fazem o saldo ficar como 399.9999995353
 
 public class SistemaBancarioMain {
 
@@ -345,6 +348,8 @@ public class SistemaBancarioMain {
 
 	public static Conta loginConta(Pessoa pessoa) throws IOException, ContaNaoEncontradaException {
 		ContasRepositorio.contaRepositorioLoader();
+		// Aqui poderia reduzir a algo assim:
+		// return ContasRepositorio.getContaPorCPF(pessoa.getCpf());
 		List<Conta> listaContas = ContasRepositorio.getContas();
 		for (Conta conta : listaContas) {
 			if (conta.getCpf().equals(pessoa.getCpf())) {

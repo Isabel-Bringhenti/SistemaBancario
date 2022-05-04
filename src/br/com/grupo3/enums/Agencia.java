@@ -7,6 +7,8 @@ public enum Agencia {
 
 	private int codigoAgencia;
 
+	// Nunca é bom usar nomes muito genéricos para parâmetros de métodos
+	// Seria melhor se fosse Agencia(int codigoAgencia)
 	Agencia(int i) {
 		this.codigoAgencia = i;
 	}

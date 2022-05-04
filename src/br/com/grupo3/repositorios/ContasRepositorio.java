@@ -139,6 +139,7 @@ public class ContasRepositorio {
 
 			}
 		} catch (ConstrucaoInvalidaException | CodigoInvalidoException e) {
+			// Esse getMessage, como não é impresso, acaba sendo inútil
 			e.getMessage();
 		}
 		

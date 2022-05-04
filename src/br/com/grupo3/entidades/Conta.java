@@ -28,18 +28,15 @@ public abstract class Conta implements Comparable<Conta> {
 	protected String codConta;
 	protected int codAgencia;
 	protected TipoConta tipoConta;
+	// Esses atributos abaixo poderiam ser estáticos
 	protected  int valorSaque;
 	protected  int valorDeposito;
 	protected  int valorTransferencia;
+
+	// Poderia simplificar assim
 	@Override
 	public  int compareTo(Conta c) {
-		if(this.getNome().compareTo(c.getNome())<0) {
-			return 0;
-		}
-		if(this.getNome().compareTo(c.getNome())>0) {
-			return 1;	
-		}
-		return -1;
+		return this.getNome().compareTo(c.getNome());
 	}
 
 	public Conta(String nome,String cpf, double saldo, String codConta, int codAgencia, int tipoConta) throws ConstrucaoInvalidaException, CodigoInvalidoException {
