@@ -9,16 +9,12 @@ public abstract class Pessoa implements Comparable<Pessoa> {
 	protected String nome;
 	protected String cpf;
 	protected String senha;
-	
+
+
+	// Aqui poderia ser algo assim
 	@Override
 	public  int compareTo(Pessoa o) {
-		if(this.getNome().compareTo(o.getNome())<0) {
-			return 0;
-		}
-		if(this.getNome().compareTo(o.getNome())>0) {
-			return 1;	
-		}
-		return -1;
+		return this.getNome().compareTo(o.getNome());
 	}
 	
 
